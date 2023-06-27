@@ -2,6 +2,11 @@
 
 - server는 api와 socket 통신만 담당
 
+# 실행순저
+
+- client: npm run build
+- server: npm run serve:server
+
 ### NPM INSTALL
 
 - npm i -D @babel/core @babel/preset-env babel-loader
