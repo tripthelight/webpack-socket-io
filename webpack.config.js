@@ -17,6 +17,7 @@ const MODE = process.env.MODE === "development";
 const CONFIG = {
   mode: process.env.MODE, // development | production
   devtool: MODE ? "source-map" : false,
+  watch: true,
   optimization: {
     minimizer: [
       new TerserPlugin({
@@ -105,6 +106,7 @@ const server = new webpackDevServer(
         { from: /^\/$/, to: "/index.html" },
         { from: /^\/about$/i, to: "/views/about/about.html" },
         { from: /^\/contents$/i, to: "/views/contents/contents.html" },
+        { from: /^\/chat$/i, to: "/views/chat/chat.html" },
         { from: /./, to: "/views/error/404.html" },
       ],
     },

@@ -2,7 +2,7 @@
 
 - server는 api와 socket 통신만 담당
 
-# 실행순저
+# 실행순서
 
 - client: npm run build
 - server: npm run serve:server
@@ -19,3 +19,4 @@
 - npm i -D webpack webpack-cli
 - npm i -D webpack-dev-middleware
 - npm i -D webpack-dev-server
+- npm i -D socket.io socket.io-client
