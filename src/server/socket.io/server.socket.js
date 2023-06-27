@@ -36,7 +36,7 @@ io.on("connection", (socket) => {
   // });
 });
 
-/**
+/** ==============================
  * NAMESPACE
  */
 const ROOM = io.of("/room");
@@ -44,19 +44,19 @@ const CHAT = io.of("/chat");
 
 // namespace: ROOM connection
 ROOM.on("connection", (socket) => {
-  console.log("ROOM 네임스페이스 접속");
-  socket.on("disconnect", () => {
-    console.log("ROOM 네임스페이스 접속 해제");
+  const roomId = "room1";
+
+  socket.join(roomId);
+  socket.to(roomId).emit("join-room", roomId);
+
+  socket.on("welcome", (data) => {
+    socket.emit("welcome-res", data);
   });
-  socket.emit("newRoom", "방 만들어");
-});
-// namespace: CHAT connection
-CHAT.on("connection", (socket) => {
-  console.log("CHAT 네임스페이스 접속");
+
+  // disconnect
   socket.on("disconnect", () => {
-    console.log("CHAT 네임스페이스 접속 해제");
+    socket.leave(roomId);
   });
-  socket.emit("join", "참여");
 });
 
 /** ==============================
