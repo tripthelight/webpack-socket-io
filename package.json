@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "webpack --config webpack.config.js",
-    "serve:server": "nodemon ./src/server/server.js"
+    "serve:socket": "nodemon ./src/server/socket.io/server.socket.js",
+    "serve:server": "nodemon ./src/server/express/server.espress.js"
   },
   "keywords": [],
   "author": "",

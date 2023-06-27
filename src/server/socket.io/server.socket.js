@@ -2,9 +2,6 @@ import dotenv from "dotenv";
 dotenv.config();
 import path from "path";
 import * as url from "url";
-// express
-import express from "express";
-// socket.io
 import { createServer } from "http";
 import { Server } from "socket.io";
 
@@ -13,10 +10,8 @@ import { Server } from "socket.io";
  */
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
-const APP = express();
-const PORT = process.env.PORT || 5000;
-const httpServer = createServer(APP);
-// socket.io
+const PORT = process.env.SOCKET_PORT || 4000;
+const httpServer = createServer();
 const io = new Server(httpServer, {
   cors: {
     origin: "*",
@@ -27,21 +22,11 @@ const io = new Server(httpServer, {
 /** ==============================
  * MIDDLEWARE
  */
-// express
-APP.use(express.json());
-APP.use(express.urlencoded({ extended: true }));
 
 /** ==============================
  * SOCKET.IO
  */
-
-/**
- * NAMESPACE
- */
-const ROOM = io.of("/room");
-const CHAT = io.of("/chat");
-
-// ioc connection
+// io connection
 io.on("connection", (socket) => {
   // socket.on("test-event", (arg, callback) => {
   //   callback("got it 11");
@@ -50,6 +35,13 @@ io.on("connection", (socket) => {
   //   callback("async send return");
   // });
 });
+
+/**
+ * NAMESPACE
+ */
+const ROOM = io.of("/room");
+const CHAT = io.of("/chat");
+
 // namespace: ROOM connection
 ROOM.on("connection", (socket) => {
   console.log("ROOM 네임스페이스 접속");
@@ -68,17 +60,8 @@ CHAT.on("connection", (socket) => {
 });
 
 /** ==============================
- * APIs
- */
-APP.get("/", (req, res) => {
-  res.json({
-    success: true,
-  });
-});
-
-/** ==============================
  * LISTEN
  */
 httpServer.listen(PORT, () => {
-  console.log(`Server is running\nhttp://localhost:${PORT}`);
+  console.log(`Socket Server is running\nhttp://localhost:${PORT}`);
 });

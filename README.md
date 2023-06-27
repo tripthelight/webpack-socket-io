@@ -1,11 +1,15 @@
-# client와 server를 분리함
+# client와 server와 socket server를 분리함
 
-- server는 api와 socket 통신만 담당
+- socket server는 socket 통신만 담당
+- socket server PORT : 4000
+- server는 api와 get 요청만 담당
+- server PORT : 5000
 
 # 실행순서
 
-- client: npm run build
+- socket: npm run serve:socket
 - server: npm run serve:server
+- client: npm run build
 
 ### NPM INSTALL
 

@@ -35,7 +35,7 @@ const CONFIG = {
     path: path.join(__dirname, "dist"),
     filename: MODE ? "js/[name].bundle.js" : "js/[name].[contenthash].bundle.js",
     clean: true,
-    publicPath: "/",
+    publicPath: "/dist",
   },
   module: {
     rules: [
