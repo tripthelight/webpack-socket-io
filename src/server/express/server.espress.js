@@ -32,5 +32,5 @@ APP.get("/", (req, res) => {
  * LISTEN
  */
 APP.listen(PORT, () => {
-  console.log(`Server is running\nhttp://localhost:${PORT}`);
+  console.log(`Web Server is running\nhttp://localhost:${PORT}`);
 });

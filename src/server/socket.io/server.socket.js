@@ -27,47 +27,26 @@ const io = new Server(httpServer, {
  * SOCKET.IO
  */
 // io connection
-io.on("connection", (socket) => {
-  // socket.on("test-event", (arg, callback) => {
-  //   callback("got it 11");
-  // });
-  // socket.on("async-send", (arg, callback) => {
-  //   callback("async send return");
-  // });
-});
+io.on("connection", (socket) => {});
 
 /** ==============================
  * NAMESPACE
  */
-const ROOM = io.of("/room");
-const CHAT = io.of("/chat");
-
-const getVisitors = () => {
-  // console.log(io.engine.clientsCount);
-  // let clients = io.sockets.clients.connected;
-  let clients = io.sockets.server.eio.clients;
-  let sockets = Object.values(clients);
-  let users = sockets.map((s) => s.id);
-  return users;
-};
-
-const emitVisitors = (socket) => {
-  socket.emit("visitors", getVisitors());
-};
+const NAMESPACE1 = io.of("/namespace1");
 
 // namespace: ROOM connection
-ROOM.on("connection", (socket) => {
+NAMESPACE1.on("connection", (socket) => {
   socket.on("join-room", (roomName, namespace) => {
-    const room = ROOM.adapter.rooms.get(roomName);
+    const room = NAMESPACE1.adapter.rooms.get(roomName);
     if (!room) {
       // Room doesn't exist, create it
       socket.join(roomName);
-      socket.emit("roomJoined");
+      socket.emit("join-room");
       console.log(`Client joined room ${roomName} in namespace ${namespace}`);
     } else if (room.size < 2) {
       // Room exists but has space, join it
       socket.join(roomName);
-      socket.emit("roomJoined");
+      socket.emit("join-room");
       console.log(`Client joined room ${roomName} in namespace ${namespace}`);
     } else {
       // Room is full, notify the client

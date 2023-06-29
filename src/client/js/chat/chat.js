@@ -4,15 +4,15 @@ import { v4 as uuidv4 } from "uuid";
 import { io, Manager } from "socket.io-client";
 
 const manager = new Manager("ws://localhost:4000");
-const roomSocket = manager.socket("/room");
+const ns1Socket = manager.socket("/namespace1");
 
-roomSocket.on("connect", () => {
-  roomSocket.emit("join-room", "A-1", "A");
+ns1Socket.on("connect", () => {
+  ns1Socket.emit("join-room", "A-1", "A");
 });
-roomSocket.on("room-full", () => {
+ns1Socket.on("room-full", () => {
   console.log("The room is full. Cannot join.");
 });
-roomSocket.on("roomJoined", () => {
+ns1Socket.on("join-room", () => {
   console.log("Successfully joined the room");
 });
 
