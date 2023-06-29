@@ -42,21 +42,41 @@ io.on("connection", (socket) => {
 const ROOM = io.of("/room");
 const CHAT = io.of("/chat");
 
+const getVisitors = () => {
+  // console.log(io.engine.clientsCount);
+  // let clients = io.sockets.clients.connected;
+  let clients = io.sockets.server.eio.clients;
+  let sockets = Object.values(clients);
+  let users = sockets.map((s) => s.id);
+  return users;
+};
+
+const emitVisitors = (socket) => {
+  socket.emit("visitors", getVisitors());
+};
+
 // namespace: ROOM connection
 ROOM.on("connection", (socket) => {
-  const roomId = "room1";
-
-  socket.join(roomId);
-  socket.to(roomId).emit("join-room", roomId);
-
-  socket.on("welcome", (data) => {
-    socket.emit("welcome-res", data);
+  socket.on("join-room", (roomName, namespace) => {
+    const room = ROOM.adapter.rooms.get(roomName);
+    if (!room) {
+      // Room doesn't exist, create it
+      socket.join(roomName);
+      socket.emit("roomJoined");
+      console.log(`Client joined room ${roomName} in namespace ${namespace}`);
+    } else if (room.size < 2) {
+      // Room exists but has space, join it
+      socket.join(roomName);
+      socket.emit("roomJoined");
+      console.log(`Client joined room ${roomName} in namespace ${namespace}`);
+    } else {
+      // Room is full, notify the client
+      socket.emit("room-full");
+    }
   });
 
   // disconnect
-  socket.on("disconnect", () => {
-    socket.leave(roomId);
-  });
+  socket.on("disconnect", () => {});
 });
 
 /** ==============================

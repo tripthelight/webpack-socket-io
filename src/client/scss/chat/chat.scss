@@ -20,67 +20,95 @@ body {
   .chat {
     flex-grow: 1;
     display: flex;
-    flex-direction: column;
     overflow: hidden;
-    .screen {
-      flex-grow: 1;
+    .chat-board {
+      flex: 1 1 calc(100% - 300px);
       display: flex;
       flex-direction: column;
-      background-color: #b1b1b1;
-      padding: 10px;
-      box-sizing: border-box;
-      align-items: flex-start;
-      overflow-x: hidden;
-      overflow-y: auto;
-      dl {
-        display: inline-flex;
+      height: 100%;
+      .screen {
+        flex-grow: 1;
+        display: flex;
         flex-direction: column;
-        dt {
-          font-size: 14px;
+        background-color: #b1b1b1;
+        padding: 10px;
+        box-sizing: border-box;
+        align-items: flex-start;
+        overflow-x: hidden;
+        overflow-y: auto;
+        dl {
+          display: inline-flex;
+          flex-direction: column;
+          dt {
+            font-size: 14px;
+          }
+          dd {
+            font-size: 16px;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-top: 10px;
+          }
+          & + dl {
+            margin-top: 10px;
+          }
+          &.user {
+            align-items: flex-end;
+            align-self: flex-end;
+            dd {
+              background-color: #000;
+              color: #fff;
+            }
+          }
         }
-        dd {
-          font-size: 16px;
-          background-color: #fff;
-          border-radius: 8px;
+      }
+      .form {
+        display: flex;
+        align-items: stretch;
+        input[type="text"] {
+          width: calc(100% - 100px);
+          height: 60px;
+          font-size: 24px;
+          margin: 0;
           padding: 10px;
           box-sizing: border-box;
-          margin-top: 10px;
-        }
-        & + dl {
-          margin-top: 10px;
-        }
-        &.user {
-          align-items: flex-end;
-          align-self: flex-end;
-          dd {
+          border: 0 none;
+          & + button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
             background-color: #000;
             color: #fff;
+            font-size: 24px;
+            &:active {
+              background-color: #141414;
+            }
           }
         }
       }
     }
-    .form {
-      display: flex;
-      align-items: stretch;
-      input[type="text"] {
-        width: calc(100% - 100px);
-        height: 60px;
-        font-size: 24px;
-        margin: 0;
-        padding: 10px;
-        box-sizing: border-box;
-        border: 0 none;
-        & + button {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 100px;
-          background-color: #000;
-          color: #fff;
-          font-size: 24px;
-          &:active {
-            background-color: #141414;
-          }
+    .chat-user {
+      flex: 1 1 300px;
+      padding: 0 20px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      h3 {
+        position: sticky;
+        width: 100%;
+        left: 0;
+        top: 0;
+        background-color: #fff;
+      }
+      ul {
+        display: flex;
+        flex-direction: column;
+        margin-top: 10px;
+
+        li {
+          padding: 6px;
+          box-sizing: border-box;
         }
       }
     }
