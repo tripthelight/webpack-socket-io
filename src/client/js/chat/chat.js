@@ -10,42 +10,29 @@ const ns1Socket = manager.socket(`/${namespace}`);
 const ROOM_NAME = uuidv4();
 
 socket.on("connect", () => {
-  socket.emit("create-room", namespace);
+  // console.log("connect >>> ");
+  // socket.emit("create-room");
+  // socket.emit("user-name", "AAA");
 });
+
+socket.on("id", (userID) => {
+  console.log("ID :: ", userID);
+  // console.log(`joined ${roomName} room!!`);
+  // drawBubble("ADMIN", `WELCOME ${roomName}!!`);
+});
+
+socket.on("create-room", (roomName) => {
+  console.log("room name :: ", roomName);
+  // console.log(`joined ${roomName} room!!`);
+  // drawBubble("ADMIN", `WELCOME ${roomName}!!`);
+});
+
 socket.on("join-room", (roomName) => {
-  console.log("Successfully joined the room :: ", roomName);
-  const CHAT_SCREEN = document.querySelector(".screen");
-  const DL_EL = document.createElement("dl");
-  const DT_EL = document.createElement("dt");
-  const DD_EL = document.createElement("dd");
-
-  DT_EL.innerHTML = "ADMIN";
-  DD_EL.innerHTML = `Welcome ${roomName}!!`;
-  DL_EL.appendChild(DT_EL);
-  DL_EL.appendChild(DD_EL);
-  CHAT_SCREEN.appendChild(DL_EL);
+  // console.log("id ::::::::: ", data.id);
+  console.log("room name :: ", roomName);
+  // console.log(`joined ${roomName} room!!`);
+  // drawBubble("ADMIN", `WELCOME ${roomName}!!`);
 });
-socket.on("room-full", () => {
-  console.log("The room is full. Cannot join.");
-});
-
-// ns1Socket.on("connect", () => {
-//   console.log("connect");
-//   ns1Socket.emit("create-room", ROOM_NAME, namespace);
-// });
-// ns1Socket.on("join-room", (roomName) => {
-//   console.log("Successfully joined the room :: ", roomName);
-// });
-// ns1Socket.on("room-full", () => {
-//   console.log("The room is full. Cannot join.");
-// });
-
-// ns1Socket.on("room-full", () => {
-//   console.log("The room is full. Cannot join.");
-// });
-// ns1Socket.on("join-room", () => {
-//   console.log("Successfully joined the room");
-// });
 
 // chat
 const CHAT = document.querySelector(".chat");
@@ -57,3 +44,18 @@ CHAT_BTN.onclick = () => {
   const MSG = CHAT_INPUT.value;
   if (MSG.length < 1) return;
 };
+
+function drawBubble(_name, _msg) {
+  const SCREEN = document.querySelector(".screen");
+  const DL = document.createElement("dl");
+  const DT = document.createElement("dt");
+  const DD = document.createElement("dd");
+
+  DT.innerHTML = _name ? _name : "ADMIN";
+  DD.innerHTML = _msg ? _msg : "WELCOME";
+
+  DL.appendChild(DT);
+  DL.appendChild(DD);
+
+  SCREEN.appendChild(DL);
+}
