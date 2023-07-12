@@ -2,6 +2,9 @@ import "../../scss/chat/chat.scss";
 import "../common/common.js";
 import { v4 as uuidv4 } from "uuid";
 import { io, Manager } from "socket.io-client";
+import SAVE_NICK from "./func/nickname.session.js";
+import MSG_DRAW from "./func/message.draw.js";
+import MSG_SEND from "./func/message.send.js";
 
 const namespace = "namespace1";
 const manager = new Manager("ws://localhost:4000");
@@ -10,52 +13,23 @@ const ns1Socket = manager.socket(`/${namespace}`);
 const ROOM_NAME = uuidv4();
 
 socket.on("connect", () => {
-  // console.log("connect >>> ");
-  // socket.emit("create-room");
-  // socket.emit("user-name", "AAA");
+  console.log("socket connect >>> ");
+  socket.emit("nickname", SAVE_NICK());
+  MSG_SEND(socket);
 });
 
-socket.on("id", (userID) => {
-  console.log("ID :: ", userID);
-  // console.log(`joined ${roomName} room!!`);
-  // drawBubble("ADMIN", `WELCOME ${roomName}!!`);
+socket.on("create-room", (data) => {
+  MSG_DRAW("ADMIN", `Hello <em>${data.nickname}</em>!! Welcome <em>${data.room}</em> room!! 총인원 : ${data.size}`);
 });
 
-socket.on("create-room", (roomName) => {
-  console.log("room name :: ", roomName);
-  // console.log(`joined ${roomName} room!!`);
-  // drawBubble("ADMIN", `WELCOME ${roomName}!!`);
+socket.on("join-room", (data) => {
+  MSG_DRAW("ADMIN", `<em>${data.nickname}</em> join <em>${data.room}</em> room!! 총인원 : ${data.size}`);
 });
 
-socket.on("join-room", (roomName) => {
-  // console.log("id ::::::::: ", data.id);
-  console.log("room name :: ", roomName);
-  // console.log(`joined ${roomName} room!!`);
-  // drawBubble("ADMIN", `WELCOME ${roomName}!!`);
+socket.on("receive-message", (_data) => {
+  MSG_DRAW(_data.nick, _data.msg, _data.nick === window.localStorage.nickname ? true : false);
 });
 
-// chat
-const CHAT = document.querySelector(".chat");
-const CHAT_INPUT = CHAT.querySelector(".ipt-chat");
-const CHAT_BTN = CHAT.querySelector(".btn-chat");
-const CHAT_SCREEN = CHAT.querySelector(".screen");
-
-CHAT_BTN.onclick = () => {
-  const MSG = CHAT_INPUT.value;
-  if (MSG.length < 1) return;
-};
-
-function drawBubble(_name, _msg) {
-  const SCREEN = document.querySelector(".screen");
-  const DL = document.createElement("dl");
-  const DT = document.createElement("dt");
-  const DD = document.createElement("dd");
-
-  DT.innerHTML = _name ? _name : "ADMIN";
-  DD.innerHTML = _msg ? _msg : "WELCOME";
-
-  DL.appendChild(DT);
-  DL.appendChild(DD);
-
-  SCREEN.appendChild(DL);
-}
+socket.on("userLeft", (_data) => {
+  MSG_DRAW("ADMIN", `<em>${_data.nick}</em> is left room, 총인원 : ${_data.size}`);
+});

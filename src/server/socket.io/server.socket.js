@@ -19,17 +19,12 @@ const io = new Server(httpServer, {
   },
 });
 
-let roomsArr = [];
-let roomName = uuidv4();
+// let roomsArr = [];
+// let roomName = uuidv4();
 
 /** ==============================
  * FUNCTIONS
  */
-const SIZE_CHECK = (_room) => {
-  return new Promise((resolve, reject) => {
-    return resolve(_room.size);
-  });
-};
 
 /** ==============================
  * MIDDLEWARE
@@ -40,17 +35,47 @@ const SIZE_CHECK = (_room) => {
  */
 // io connection
 io.on("connection", (socket) => {
-  if (!socket.adapter.rooms.get(roomName)) {
-    socket.join(roomName);
-    socket.emit("join-room", roomName);
-  } else if (socket.adapter.rooms.get(roomName).size < 2) {
-    socket.join(roomName);
-    socket.emit("join-room", roomName);
-  } else {
-    roomName = uuidv4();
-    socket.join(roomName);
-    socket.emit("join-room", roomName);
-  }
+  const ROOM_NAME = "AAA";
+  const ROOM = socket.adapter.rooms.get(ROOM_NAME);
+
+  socket.on("nickname", (_nickname) => {
+    socket.nickname = _nickname;
+    if (!ROOM) {
+      console.log("a1 :: ", socket.adapter.rooms);
+      socket.join(ROOM_NAME);
+      socket.emit("create-room", {
+        nickname: _nickname,
+        room: ROOM_NAME,
+        size: !ROOM ? 1 : ROOM.size,
+      });
+      console.log("a2 :: ", socket.adapter.rooms);
+    } else if (ROOM.size === 1) {
+      console.log("b1 :: ", socket.adapter.rooms);
+      socket.join(ROOM_NAME);
+      io.to(ROOM_NAME).emit("join-room", {
+        nickname: _nickname,
+        room: ROOM_NAME,
+        size: ROOM.size,
+      });
+      console.log("b2 :: ", socket.adapter.rooms);
+    } else {
+      console.log("AAA room is full !!");
+    }
+  });
+
+  // socket.on("roomName", (_roomName) => {
+  //   const ROOM = socket.adapter.rooms.get(_roomName);
+
+  // });
+
+  socket.on("send-message", (_data) => {
+    io.to(ROOM_NAME).emit("receive-message", { msg: _data.msg, nick: _data.nick });
+  });
+
+  // disconnect
+  socket.on("disconnect", (reason) => {
+    socket.to(ROOM_NAME).emit("userLeft", { nick: socket.nickname, size: !ROOM ? 1 : ROOM.size });
+  });
 });
 
 /** ==============================
