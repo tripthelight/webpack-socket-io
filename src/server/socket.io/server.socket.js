@@ -25,6 +25,7 @@ const io = new Server(httpServer, {
 /** ==============================
  * FUNCTIONS
  */
+const returnRoom = (_socket, _roomName) => _socket.adapter.rooms.get(_roomName);
 
 /** ==============================
  * MIDDLEWARE
@@ -36,28 +37,26 @@ const io = new Server(httpServer, {
 // io connection
 io.on("connection", (socket) => {
   const ROOM_NAME = "AAA";
-  const ROOM = socket.adapter.rooms.get(ROOM_NAME);
+  const ROOM = returnRoom(socket, ROOM_NAME);
 
   socket.on("nickname", (_nickname) => {
     socket.nickname = _nickname;
     if (!ROOM) {
-      console.log("a1 :: ", socket.adapter.rooms);
       socket.join(ROOM_NAME);
       socket.emit("create-room", {
         nickname: _nickname,
         room: ROOM_NAME,
-        size: !ROOM ? 1 : ROOM.size,
+        size: returnRoom(socket, ROOM_NAME).size,
       });
-      console.log("a2 :: ", socket.adapter.rooms);
+      console.log(returnRoom(socket, ROOM_NAME));
+      console.log(returnRoom(socket, ROOM_NAME).size);
     } else if (ROOM.size === 1) {
-      console.log("b1 :: ", socket.adapter.rooms);
       socket.join(ROOM_NAME);
       io.to(ROOM_NAME).emit("join-room", {
         nickname: _nickname,
         room: ROOM_NAME,
-        size: ROOM.size,
+        size: returnRoom(socket, ROOM_NAME).size,
       });
-      console.log("b2 :: ", socket.adapter.rooms);
     } else {
       console.log("AAA room is full !!");
     }
