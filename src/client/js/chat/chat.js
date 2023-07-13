@@ -10,12 +10,20 @@ const namespace = "namespace1";
 const manager = new Manager("ws://localhost:4000");
 const socket = manager.socket("/");
 const ns1Socket = manager.socket(`/${namespace}`);
-const ROOM_NAME = uuidv4();
+const SESS_ROOM = () => {
+  if (window.sessionStorage.getItem("roomName")) return window.sessionStorage.getItem("roomName");
+  window.sessionStorage.setItem("roomName", uuidv4());
+  return window.sessionStorage.getItem("roomName");
+};
 
 socket.on("connect", () => {
   console.log("socket connect >>> ");
-  socket.emit("nickname", SAVE_NICK());
+  socket.emit("nickname", { nickname: SAVE_NICK(), roomName: SESS_ROOM() });
   MSG_SEND(socket);
+});
+
+socket.on("nickname", (_nickname) => {
+  MSG_DRAW(_nickname, `${_nickname} joined`);
 });
 
 socket.on("create-room", (data) => {
@@ -24,6 +32,7 @@ socket.on("create-room", (data) => {
 
 socket.on("join-room", (data) => {
   MSG_DRAW("ADMIN", `<em>${data.nickname}</em> join <em>${data.room}</em> room!! 총인원 : ${data.size}`);
+  window.sessionStorage.setItem("roomName", data.room);
 });
 
 socket.on("receive-message", (_data) => {
