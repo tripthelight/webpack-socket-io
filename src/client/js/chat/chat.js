@@ -18,7 +18,7 @@ const SESS_ROOM = () => {
 
 socket.on("connect", () => {
   console.log("socket connect >>> ");
-  socket.emit("nickname", { nickname: SAVE_NICK(), roomName: SESS_ROOM() });
+  socket.emit("nickname", { nickname: SAVE_NICK() });
   MSG_SEND(socket);
 });
 
@@ -28,6 +28,7 @@ socket.on("nickname", (_nickname) => {
 
 socket.on("create-room", (data) => {
   MSG_DRAW("ADMIN", `Hello <em>${data.nickname}</em>!! Welcome <em>${data.room}</em> room!! 총인원 : ${data.size}`);
+  window.sessionStorage.setItem("roomName", data.room);
 });
 
 socket.on("join-room", (data) => {
