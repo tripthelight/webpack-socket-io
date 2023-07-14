@@ -15,6 +15,7 @@
   "devDependencies": {
     "@babel/core": "^7.22.5",
     "@babel/preset-env": "^7.22.5",
+    "@socket.io/admin-ui": "^0.5.1",
     "autoprefixer": "^10.4.14",
     "axios": "^1.4.0",
     "babel-loader": "^9.1.2",

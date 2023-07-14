@@ -14,7 +14,7 @@ const SESSION_STORAGE = {
       // chat 페이지가 아닐 경우 sessionStorage: roomName 제거
       const PATH_NAME = window.location.pathname;
       if (!PATH_NAME) return;
-      if (PATH_NAME === "chat") return;
+      if (PATH_NAME === "/chat") return;
       window.sessionStorage.removeItem("roomName");
     },
   },
