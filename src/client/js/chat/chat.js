@@ -9,24 +9,38 @@ import MSG_DRAW from "./func/message.draw.js";
 import MSG_SEND from "./func/message.send.js";
 import HIDE_LOAD from "./func/loading.hide.js";
 
+import NICK_MAKE from "./func/nickname.make.js";
+
 const namespace = "namespace1";
 const manager = new Manager("ws://localhost:4000");
 const socket = manager.socket("/");
 const ns1Socket = manager.socket(`/${namespace}`);
 
+// 트레픽 유량제어 테스트
+// 트래픽 폭주환경 만들기
+// for (let i = 0; i < 1_000; i++) {
+//   socket.emit("nickname", {
+//     nickname: NICK_MAKE(5),
+//   });
+// }
+
 socket.on("connect", () => {
   console.log("socket connect >>> ");
   // 새로고침
-  if (pageAccessedByReload) {
-    console.log("새로고침 함");
-    HIDE_LOAD();
-  } else {
-    console.log("새로고침 안함");
-    socket.emit("nickname", {
-      nickname: SAVE_NICK(),
-      roomName: window.sessionStorage.getItem("roomName"),
-    });
-  }
+  // if (pageAccessedByReload) {
+  //   console.log("새로고침 함");
+  //   HIDE_LOAD();
+  // } else {
+  //   console.log("새로고침 안함");
+  //   socket.emit("nickname", {
+  //     nickname: SAVE_NICK(),
+  //     roomName: window.sessionStorage.getItem("roomName"),
+  //   });
+  // }
+  socket.emit("nickname", {
+    nickname: SAVE_NICK(),
+    roomName: window.sessionStorage.getItem("roomName"),
+  });
   MSG_SEND(socket);
 });
 
