@@ -24,3 +24,8 @@
 - npm i -D webpack-dev-middleware
 - npm i -D webpack-dev-server
 - npm i -D socket.io socket.io-client
+
+### TODO
+
+- client에서 새로고침 시 server에 영향 안주도록 할 것
+- 트래픽 최소화 고민..

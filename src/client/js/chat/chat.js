@@ -2,10 +2,12 @@ import "../../scss/chat/chat.scss";
 import "../common/common.js";
 import { v4 as uuidv4 } from "uuid";
 import { io, Manager } from "socket.io-client";
+import pageAccessedByReload from "../../module/client/common/pageAccessedByReload.js";
 import SAVE_NICK from "./func/nickname.session.js";
 import SAVE_ROOM from "./func/roomname.session.js";
 import MSG_DRAW from "./func/message.draw.js";
 import MSG_SEND from "./func/message.send.js";
+import HIDE_LOAD from "./func/loading.hide.js";
 
 const namespace = "namespace1";
 const manager = new Manager("ws://localhost:4000");
@@ -14,10 +16,17 @@ const ns1Socket = manager.socket(`/${namespace}`);
 
 socket.on("connect", () => {
   console.log("socket connect >>> ");
-  socket.emit("nickname", {
-    nickname: SAVE_NICK(),
-    roomName: window.sessionStorage.getItem("roomName"),
-  });
+  // 새로고침
+  if (pageAccessedByReload) {
+    console.log("새로고침 함");
+    HIDE_LOAD();
+  } else {
+    console.log("새로고침 안함");
+    socket.emit("nickname", {
+      nickname: SAVE_NICK(),
+      roomName: window.sessionStorage.getItem("roomName"),
+    });
+  }
   MSG_SEND(socket);
 });
 
@@ -36,9 +45,7 @@ socket.on("receive-message", (_data) => {
 });
 
 socket.on("hide-loading", () => {
-  const LOADING = document.querySelector(".loading");
-  if (!LOADING) return;
-  LOADING.classList.add("hide");
+  HIDE_LOAD();
 });
 
 socket.on("userLeft", (_data) => {
