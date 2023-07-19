@@ -66,7 +66,7 @@ const REMOVE_ROOMS = (_socket) => {
 // 메시지를 받을 때 내 room을 찾기
 const MY_ROOM = async (_socket) => [..._socket.rooms.keys()].join();
 
-const ENTER_ROOM = (_socket, _data) => {
+const ENTER_ROOM = async (_socket, _data) => {
   const SEND_ROOM_INFO = (_socket, _room) => {
     return {
       nickname: _data.nickname,
@@ -105,6 +105,19 @@ const ENTER_ROOM = (_socket, _data) => {
       io.users = [];
     }
 
+    // io 에 있는 ROOM의 모든 소켓을 리턴 -> Promise를 리턴
+    // const ids = io.in(ROOM).allSockets();
+    // ids.then((data) => {
+    //   console.log("data :: ", data);
+    //   console.log("data.size :: ", data.size);
+    // });
+
+    // io 에 있는 ROOM의 모든 소켓 map()을 리턴 -> Promise를 리턴
+    // const sockets = io.in(ROOM).fetchSockets();
+    // sockets.then((data) => {
+    //   console.log("socket map :: ", data);
+    // });
+
     if (_socket.rooms.size === 2) {
       io.users = [];
       if (_socket.rooms.has(_socket.id)) {
@@ -114,6 +127,7 @@ const ENTER_ROOM = (_socket, _data) => {
 
     _socket.emit("hide-loading");
   }
+  return;
 };
 
 /** ==============================
@@ -150,14 +164,16 @@ io.on("connection", (socket) => {
    * client에 진입시 처음 받는 socket event
    * user의 nickname을 받아서 room에 입장시킴
    */
-  socket.on("nickname", (_data) => {
-    ENTER_ROOM(socket, _data);
+  socket.on("nickname", async (_data) => {
+    await ENTER_ROOM(socket, _data);
   });
 
   socket.on("send-message", async (_data) => {
     // 나의 roomname: [...socket.rooms.keys()].join()
-    const ROOM = await MY_ROOM(socket);
-    io.to(ROOM).emit("receive-message", { msg: _data.msg, nick: socket.nickname });
+    // const ROOM = await MY_ROOM(socket);
+    MY_ROOM(socket).then((_room) => {
+      io.to(_room).emit("receive-message", { msg: _data.msg, nick: socket.nickname });
+    });
   });
 
   // disconnecting - 방을 나가기 전: 내 socket.room 을 가지고 있음
