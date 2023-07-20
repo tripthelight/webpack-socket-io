@@ -165,15 +165,23 @@ io.on("connection", (socket) => {
    * user의 nickname을 받아서 room에 입장시킴
    */
   socket.on("nickname", async (_data) => {
-    await ENTER_ROOM(socket, _data);
+    try {
+      await ENTER_ROOM(socket, _data);
+    } catch (error) {
+      console.error(error);
+    }
   });
 
   socket.on("send-message", async (_data) => {
     // 나의 roomname: [...socket.rooms.keys()].join()
     // const ROOM = await MY_ROOM(socket);
-    MY_ROOM(socket).then((_room) => {
-      io.to(_room).emit("receive-message", { msg: _data.msg, nick: socket.nickname });
-    });
+    try {
+      MY_ROOM(socket).then((_room) => {
+        io.to(_room).emit("receive-message", { msg: _data.msg, nick: socket.nickname });
+      });
+    } catch (error) {
+      console.error(error);
+    }
   });
 
   // disconnecting - 방을 나가기 전: 내 socket.room 을 가지고 있음
