@@ -29,3 +29,4 @@
 
 - client에서 새로고침 시 server에 영향 안주도록 할 것
 - 트래픽 최소화 고민..
+- serve promise 처리가 이해안됨...
